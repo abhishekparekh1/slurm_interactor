@@ -1,0 +1,4 @@
+wait_for_drain: true
+specific_compute_name: false
+pass_minimun_specs: false
+
