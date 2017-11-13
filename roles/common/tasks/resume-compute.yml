@@ -1,0 +1,3 @@
+- name: Resume Compute
+  command: scontrol update nodename="{{ item }}" state=resume
+  with_items: "{{ groups['compute'] }}"
