@@ -1,0 +1,3 @@
+- name: Drain a compute node
+  command: scontrol update nodename="{{ item }}" state=drain reason=Kubernetes
+  with_items: "{{ groups['compute'] }}"
