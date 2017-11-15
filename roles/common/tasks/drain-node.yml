@@ -1,3 +1,16 @@
-- name: Drain a compute node
-  command: scontrol update nodename="{{ item }}" state=drain reason=Kubernetes
-  with_items: "{{ groups['compute'] }}"
+---
+- name: "Drain a compute node and return its ip address"
+  hosts: controller
+  
+  tasks:
+  - name: Get compute names
+    shell: scontrol show node|grep NodeName|cut -d"=" -f2|cut -d" " -f1
+    register: computes
+
+  - debug: msg="{{ computes.stdout_lines }}"
+
+  - set_fact: computes_list={{ computes.stdout_lines }}
+
+  - name: Start draining a node
+    shell: scontrol update NodeName="{{ item }}" state=drain reason=Kubernetes
+    with_items: " {{ computes_list }}"
