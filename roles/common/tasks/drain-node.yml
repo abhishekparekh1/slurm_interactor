@@ -13,4 +13,11 @@
 
   - name: Start draining a node
     shell: scontrol update NodeName="{{ item }}" state=drain reason=Kubernetes
-    with_items: " {{ computes_list }}"
+    with_random_choice: " {{ computes_list }}"
+    register: drain_result
+
+  - debug: msg="{{ drain_result.results.0.item }}"
+    register: drained_node
+
+#  - name: Wait for compute node to get drained
+    
