@@ -1,3 +1,8 @@
-- name: Resume Compute
-  command: scontrol update nodename="{{ item }}" state=resume
-  with_items: "{{ groups['compute'] }}"
+---
+- name: "Resume a compute node"
+  hosts: controller
+  
+  tasks:
+  - name: Resume compute node
+    command: scontrol update nodename="{{ compute }}" state=resume
+
