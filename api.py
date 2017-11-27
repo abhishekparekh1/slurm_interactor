@@ -16,14 +16,13 @@ class Options(object):
         ask_vault_pass=None, vault_passwords_files=None,
         new_vault_password_file=None, output_file=None, tags=None,
         skip_tags=None, one_line=None, tree=None, ask_sudo_pass=None,
-        ask_su_pass+none, sudo=None, sudo_user=None, become=None,
+        ask_su_pass=None, sudo=None, sudo_user=None, become=None,
         become_method=None, become_user=None, become_ask_pass=None,
         ask_pass=None, private_key_file=None, remote_user=None,
         connection=None, timeout=None, ssh_common_args=None,
-        sftp_extra_args=None, scp_extra_args=None, ssh_extra_args=None
-        poll_interval=None, seconds=None, check=None, systax=None
-        seconds=None, check=None,syntax=None, diff=None
-        force_handlers = None, flush_cache=None, listtasks=None
+        sftp_extra_args=None, scp_extra_args=None, ssh_extra_args=None,
+        poll_interval=None, seconds=None, check=None, systax=None,
+        diff=None, force_handlers = None, flush_cache=None, listtasks=None,
         listtags=None, module_path = None):
         
         self.verbosity = verbosity
