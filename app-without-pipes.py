@@ -37,6 +37,9 @@ def resume_node():
     run_data={
         'user_id': 0,
      }
+    hostname = request.args.get('hostname')
+    if not hostname:
+        raise InvalidUsage('Hostname is Null', status_code=500)
     runner = Runner(
         hostnames='192.168.122.204',
         playbook='roles/common/tasks/resume-node.yml',

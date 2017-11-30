@@ -125,7 +125,6 @@ class Runner(object):
 
 
     def run(self):
-        import pdb;pdb.set_trace()
         # Results of PlaybookExecutor
         self.pbex.run()
         stats = self.pbex._tqm._stats
