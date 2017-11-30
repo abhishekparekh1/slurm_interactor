@@ -13,8 +13,7 @@ class Options(object):
     """
     def __init__(self, verbosity=None, inventory=None, listhosts=None,
         subset=None, module_paths=None, extra_vars=None, forks=None,
-        ask_vault_pass=None, vault_passwords_files=None,
-        new_vault_password_file=None, output_file=None, tags=None,
+        ask_vault_pass=None, output_file=None, tags=None,
         skip_tags=None, one_line=None, tree=None, ask_sudo_pass=None,
         ask_su_pass=None, sudo=None, sudo_user=None, become=None,
         become_method=None, become_user=None, become_ask_pass=None,
@@ -23,7 +22,8 @@ class Options(object):
         sftp_extra_args=None, scp_extra_args=None, ssh_extra_args=None,
         poll_interval=None, seconds=None, check=None, systax=None,
         diff=None, force_handlers = None, flush_cache=None, listtasks=None,
-        listtags=None, module_path = None):
+        listtags=None, module_path = None, vault_password_files=None,
+        new_vault_password_file=None, syntax=None):
         
         self.verbosity = verbosity
         self.inventory = inventory
@@ -33,8 +33,6 @@ class Options(object):
         self.extra_vars = extra_vars
         self.forks = forks
         self.ask_vault_pass = ask_vault_pass
-        self.vault_password_files = vault_password_files
-        self.new_vault_password_file = new_vault_password_file
         self.output_file = output_file
         self.tags = tags
         self.skip_tags = skip_tags
@@ -60,18 +58,20 @@ class Options(object):
         self.poll_interval = poll_interval
         self.seconds = seconds
         self.check = check
-        self.syntax = syntax
         self.diff = diff
         self.force_handlers = force_handlers
         self.flush_cache = flush_cache
         self.listtasks = listtasks
         self.listtags = listtags
         self.module_path = module_path
+	self.vault_password_files = vault_password_files,
+        self.new_vault_password_file=None
+        self.syntax=None
 
 class Runner(object):
 
     def __init__(self, hostnames, playbook, private_key_file, run_data, become_pass,
-                 versbosity=0):
+                 verbosity=0):
 
         self.run_data = run_data
 
@@ -87,12 +87,12 @@ class Runner(object):
         self.display.verbosity = self.options.verbosity
         playbook_executor.verbosity = self.options.verbosity
         
-        # Become pass Neeed if not logging in as user root
+        # Become pass Need if not logging in as user root
         passwords = {'become_pass' : become_pass}
 
         # Gets data from YAML/JSON files
         self.loader = DataLoader()
-        self.loader.set_vault_password(os.environ['VAULT_PASS'])
+        # self.loader.set_vault_password(os.environ['VAULT_PASS'])
 
         # All the variables from all the various places
         self.variable_manager = VariableManager()
@@ -100,8 +100,11 @@ class Runner(object):
 
         # Parse hosts
         # TODO Figure out a better way to parse hosts
-        self.hosts = NameTemporaryFile(delete=False)
-        self.hosts.write("""[run_hosts] %s""" % hostnames)
+        self.hosts = NamedTemporaryFile(delete=False)
+	self.hosts.write("""[run_hosts]
+        %s
+        """ % hostnames)
+        
         self.hosts.close()
         self.inventory = Inventory(loader = self.loader, variable_manager=self.variable_manager,
                                    host_list=self.hosts.name)
@@ -122,6 +125,7 @@ class Runner(object):
 
 
     def run(self):
+        import pdb;pdb.set_trace()
         # Results of PlaybookExecutor
         self.pbex.run()
         stats = self.pbex._tqm._stats
