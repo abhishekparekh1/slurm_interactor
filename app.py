@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
+from flask import abort
 import subprocess
 from error import InvalidUsage
 app = Flask(__name__)
@@ -18,6 +19,11 @@ def drain_node():
     out = proc.communicate()
     out = out[0]
     for line in out.split("\n"):
+        if "failed=" in line:
+            failure_string = line.split("failed=")[1]
+            num_of_failures = int(failure_string[0])
+            if num_of_failures > 0:
+                abort(500, out)
         if "item=" in line:
             node_name=line.split("=")[2].replace(")","")
     return node_name

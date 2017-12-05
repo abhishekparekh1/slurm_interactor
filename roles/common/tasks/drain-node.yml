@@ -16,8 +16,14 @@
     with_random_choice: " {{ computes_list }}"
     register: drain_result
 
+  - name: Check for status
+    shell: scontrol show node "{{ drain_result.results.0.item }}"|grep State|cut -d"=" -f2|cut -d" " -f1
+    register: result
+    until: result.stdout.find("DRAINED") != -1
+    delay: 5
+    retries: 2
+
+  - debug: msg="{{ status }}"
+
   - debug: msg="{{ drain_result.results.0.item }}"
     register: drained_node
-
-#  - name: Wait for compute node to get drained
-    
