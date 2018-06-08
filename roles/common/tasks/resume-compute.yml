@@ -6,3 +6,7 @@
   - name: Resume compute node
     command: scontrol update nodename="{{ compute }}" state=resume
 
+  - name: Kubdeadm reset command to delete files
+    shell: sudo kubeadm reset
+
+

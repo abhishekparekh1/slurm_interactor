@@ -15,7 +15,7 @@ def handle_invalid_usage(error):
 
 @app.route('/drain_node')
 def drain_node():
-    proc =  subprocess.Popen('ansible-playbook -i /root/slurm_interactor/inventory/hosts /root/slurm_interactor/roles/common/tasks/drain-node.yml', stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+    proc =  subprocess.Popen('ansible-playbook -i /home/prateek/slurm_interactor/inventory/hosts /home/prateek/slurm_interactor/roles/common/tasks/drain-node.yml', stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
     out = proc.communicate()
     out = out[0]
     for line in out.split("\n"):
@@ -33,10 +33,10 @@ def resume_node():
     hostname = request.args.get('hostname')
     if not hostname:
         raise InvalidUsage('Hostname is Null', status_code=500)
-    query_string = 'ansible-playbook -i inventory/hosts --extra-vars compute="'+hostname+'" /root/slurm_interactor/roles/common/tasks/resume-compute.yml'
+    query_string = 'ansible-playbook -i /home/prateek/slurm_interactor/inventory/hosts --extra-vars compute="'+hostname+'" /home/prateek/slurm_interactor/roles/common/tasks/resume-compute.yml'
     proc =  subprocess.Popen(query_string, stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
     out = proc.communicate()
     return out
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='10.227.119.160')

@@ -1,4 +1,4 @@
----
+
 - name: "Drain a compute node and return its ip address"
   hosts: controller
   
@@ -19,11 +19,15 @@
   - name: Check for status
     shell: scontrol show node "{{ drain_result.results.0.item }}"|grep State|cut -d"=" -f2|cut -d" " -f1
     register: result
-    until: result.stdout.find("DRAINED") != -1
+    until: result.stdout.find("IDLE+DRAIN") != -1
     delay: 5
     retries: 2
 
-  - debug: msg="{{ status }}"
+  - #debug: msg="{{ status }}"
 
   - debug: msg="{{ drain_result.results.0.item }}"
     register: drained_node
+
+  - name: Join the cluster
+    shell: sudo kubeadm join 10.13.45.40:6443 --token h0b8yj.2345fwq8qdd6py80 --discovery-token-ca-cert-hash sha256:c38af7fa47245b8d321468c77e8d3858bc00dc395569ced4713859bb8af03b06
+
